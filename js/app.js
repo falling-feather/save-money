@@ -10,10 +10,13 @@ class App {
         this.model = new DataModel();
         this.charts = new ChartManager();
         this.currentDate = new Date();
-        this.viewMode = 'month'; // 'month' or 'year'
+        this.viewMode = 'month';
         
         this.ui = new UI({
             onAddRecord: (r) => this.handleAddRecord(r),
+            // === 绑定删除事件 ===
+            onDeleteRecord: (id, isRec) => this.handleDeleteRecord(id, isRec),
+            
             onViewModeChange: (mode) => {
                 this.viewMode = mode;
                 this.refreshView();
@@ -29,8 +32,6 @@ class App {
         document.getElementById('ghRepo').value = this.api.repo;
         document.getElementById('btnLoad').onclick = () => this.loadCloudData();
         document.getElementById('btnSave').onclick = () => this.saveCloudData();
-        
-        // 尝试自动读取
         if(this.api.token && this.api.repo) this.loadCloudData();
         else this.refreshView();
     }
@@ -49,7 +50,7 @@ class App {
             this.refreshView();
         } catch(e) {
             console.error(e);
-            alert('读取失败，请检查Token');
+            alert('读取失败或Token错误');
         } finally {
             this.ui.toggleLoading(false);
         }
@@ -73,6 +74,14 @@ class App {
         this.refreshView();
     }
 
+    // === 新增：处理删除逻辑 ===
+    handleDeleteRecord(id, isRecurring) {
+        this.model.deleteRecord(id, isRecurring);
+        this.refreshView(); // 刷新界面
+        // 建议删除后提醒用户保存
+        // alert('记录已删除，记得点击右上角的“保存”按钮同步到云端哦！');
+    }
+
     handleNavigate(dir) {
         if (this.viewMode === 'month') {
             this.currentDate.setMonth(this.currentDate.getMonth() + dir);
@@ -89,35 +98,18 @@ class App {
         this.ui.renderHeader(this.currentDate, this.viewMode);
 
         if (this.viewMode === 'month') {
-            // === 月视图模式 ===
             const monthData = this.model.getMonthData(year, month);
-            
-            // 统计
             let tInc = 0, tExp = 0;
             monthData.forEach(d => { tInc += d.inc; tExp += d.exp; });
             this.ui.renderStats(tInc, tExp);
-            
-            // 图表
-            const dailyNets = monthData.map(d => d.net);
-            this.charts.render(tInc, tExp, dailyNets, monthData.length);
-            
-            // 网格
+            this.charts.render(tInc, tExp, monthData.map(d => d.net), monthData.length);
             this.ui.renderMonthGrid(year, month, monthData);
-
         } else {
-            // === 年视图模式 ===
-            const yearData = this.model.getYearData(year); // 12个月的数据
-            
-            // 统计全年
+            const yearData = this.model.getYearData(year);
             let yInc = 0, yExp = 0;
             yearData.forEach(m => { yInc += m.inc; yExp += m.exp; });
             this.ui.renderStats(yInc, yExp);
-
-            // 图表 (这里复用 barChart 显示每月净值)
-            const monthlyNets = yearData.map(m => m.net);
-            this.charts.render(yInc, yExp, monthlyNets, 12);
-
-            // 网格
+            this.charts.render(yInc, yExp, yearData.map(m => m.net), 12);
             this.ui.renderYearGrid(yearData);
         }
     }
