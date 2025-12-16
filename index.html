@@ -50,7 +50,6 @@
                         <option value="month">月视图 (明细)</option>
                         <option value="year">年视图 (趋势)</option>
                     </select>
-                    <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> 记一笔</button>
                 </div>
             </div>
             <div id="calendarGrid" class="calendar-grid"></div>
@@ -59,48 +58,61 @@
 
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h3><i class="fas fa-pen-fancy"></i> 记账</h3>
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="single">单次记录</button>
-                <button class="tab-btn" data-tab="long">周期/长期</button>
+            <div class="modal-nav">
+                <button class="nav-btn active" id="navAdd">记账 (Add)</button>
+                <button class="nav-btn" id="navDetail">详情 (Detail)</button>
             </div>
-            <form id="recordForm">
-                <div class="form-row">
-                    <select id="inType"><option value="expense">支出</option><option value="income">收入</option></select>
-                    <input type="number" id="inAmount" placeholder="金额" step="0.01" required>
-                    <select id="inCurrency"><option value="CNY">CNY</option><option value="USD">USD</option></select>
-                </div>
-                
-                <div id="groupSingle" class="form-group">
-                    <label>日期</label><input type="date" id="inDate">
-                </div>
+            <h4 id="modalDateTitle" style="text-align:center; margin: 10px 0; color:#aaa">2023-10-01</h4>
 
-                <div id="groupLong" class="form-group hidden">
-                    <div class="form-row">
-                        <div><label>开始</label><input type="date" id="inStartDate"></div>
-                        <div><label>结束</label><input type="date" id="inEndDate"></div>
+            <div id="viewAdd" class="modal-view">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="single">单次</button>
+                    <button class="tab-btn" data-tab="long">周期/长期</button>
+                </div>
+                <form id="recordForm">
+                    <input type="hidden" id="editId"> <div class="form-row">
+                        <select id="inType"><option value="expense">支出</option><option value="income">收入</option></select>
+                        <input type="number" id="inAmount" placeholder="金额" step="0.01" required>
+                        <select id="inCurrency"><option value="CNY">CNY</option><option value="USD">USD</option></select>
                     </div>
+                    
+                    <div id="groupSingle" class="form-group">
+                        <label>日期</label><input type="date" id="inDate">
+                    </div>
+
+                    <div id="groupLong" class="form-group hidden">
+                        <div class="form-row">
+                            <div><label>开始</label><input type="date" id="inStartDate"></div>
+                            <div><label>结束</label><input type="date" id="inEndDate"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>频率</label>
+                            <select id="inCycle" style="width:100%">
+                                <option value="1">每天</option>
+                                <option value="7">每周 (7天)</option>
+                                <option value="30">每月 (30天)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label>支付频率</label>
-                        <select id="inCycle" style="width:100%">
-                            <option value="1">每天 (连续)</option>
-                            <option value="7">每周 (7天一次)</option>
-                            <option value="30">每月 (30天一次)</option>
-                        </select>
+                        <input type="text" id="inNote" placeholder="备注">
                     </div>
-                </div>
+                    <div class="form-actions">
+                        <button type="button" id="btnCancel" class="danger">关闭</button>
+                        <button type="submit" id="btnConfirm">确认</button>
+                    </div>
+                </form>
+            </div>
 
-                <div class="form-group">
-                    <input type="text" id="inNote" placeholder="备注 (如: 房租、订阅费)">
+            <div id="viewDetail" class="modal-view hidden">
+                <div id="detailList" class="detail-list">
+                    <div style="text-align:center; color:#666">当日无记录</div>
                 </div>
-                <div class="form-actions">
-                    <button type="button" id="btnCancel" class="danger">取消</button>
-                    <button type="submit" id="btnConfirm">确认</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
-</html>
+</html> 

@@ -13,10 +13,9 @@ class App {
         this.viewMode = 'month';
         
         this.ui = new UI({
-            onAddRecord: (r) => this.handleAddRecord(r),
-            // === 绑定删除事件 ===
+            // 这里将 onAddRecord 改为了 onSaveRecord，逻辑更通用
+            onSaveRecord: (r) => this.handleSaveRecord(r),
             onDeleteRecord: (id, isRec) => this.handleDeleteRecord(id, isRec),
-            
             onViewModeChange: (mode) => {
                 this.viewMode = mode;
                 this.refreshView();
@@ -69,17 +68,21 @@ class App {
         }
     }
 
-    handleAddRecord(record) {
-        this.model.addRecord(record);
+    // === 新增/修改 统一入口 ===
+    handleSaveRecord(record) {
+        if (record.id) {
+            // 有ID，说明是修改
+            this.model.updateRecord(record);
+        } else {
+            // 无ID，说明是新增
+            this.model.addRecord(record);
+        }
         this.refreshView();
     }
 
-    // === 新增：处理删除逻辑 ===
     handleDeleteRecord(id, isRecurring) {
         this.model.deleteRecord(id, isRecurring);
-        this.refreshView(); // 刷新界面
-        // 建议删除后提醒用户保存
-        // alert('记录已删除，记得点击右上角的“保存”按钮同步到云端哦！');
+        this.refreshView();
     }
 
     handleNavigate(dir) {
