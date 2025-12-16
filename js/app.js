@@ -13,7 +13,6 @@ class App {
         this.viewMode = 'month';
         
         this.ui = new UI({
-            // 这里将 onAddRecord 改为了 onSaveRecord，逻辑更通用
             onSaveRecord: (r) => this.handleSaveRecord(r),
             onDeleteRecord: (id, isRec) => this.handleDeleteRecord(id, isRec),
             onViewModeChange: (mode) => {
@@ -68,13 +67,10 @@ class App {
         }
     }
 
-    // === 新增/修改 统一入口 ===
     handleSaveRecord(record) {
         if (record.id) {
-            // 有ID，说明是修改
             this.model.updateRecord(record);
         } else {
-            // 无ID，说明是新增
             this.model.addRecord(record);
         }
         this.refreshView();

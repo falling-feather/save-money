@@ -7,11 +7,11 @@ export class UI {
     }
 
     setupListeners() {
-        // 1. 模态框一级导航 (记账 vs 详情)
+        // 模态框导航
         document.getElementById('navAdd').onclick = () => this.switchModalView('add');
         document.getElementById('navDetail').onclick = () => this.switchModalView('detail');
 
-        // 2. 记账 Tab (单次 vs 周期)
+        // Tab 切换
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -22,45 +22,46 @@ export class UI {
             });
         });
 
-        // 3. 提交表单
+        // 表单提交
         document.getElementById('recordForm').onsubmit = (e) => {
             e.preventDefault();
-            this.cb.onSaveRecord(this.getFormData()); // 注意这里改为 onSaveRecord
+            this.cb.onSaveRecord(this.getFormData());
             document.getElementById('addModal').style.display = 'none';
         };
 
-        // 4. 其他按钮
+        // 通用按钮
         document.getElementById('btnCancel').onclick = () => document.getElementById('addModal').style.display = 'none';
-        document.getElementById('btnAdd').onclick = () => this.openDayModal(new Date(), []); // 顶部大按钮
+        document.getElementById('btnAdd').onclick = () => this.openDayModal(new Date(), []);
+        
+        // 视图切换与导航
         document.getElementById('viewMode').addEventListener('change', (e) => this.cb.onViewModeChange(e.target.value));
         document.getElementById('btnPrev').onclick = () => this.cb.onNavigate(-1);
         document.getElementById('btnNext').onclick = () => this.cb.onNavigate(1);
     }
 
-    // === 打开每日模态框 ===
+    // === 打开弹窗 ===
     openDayModal(date, items = []) {
         this.currentSelectedDate = date;
         this.currentDayItems = items;
 
-        // 1. 设置标题
         const y = date.getFullYear();
         const m = String(date.getMonth() + 1).padStart(2, '0');
         const d = String(date.getDate()).padStart(2, '0');
         const dateStr = `${y}-${m}-${d}`;
+        
         document.getElementById('modalDateTitle').innerText = dateStr;
-
-        // 2. 重置表单 (默认新增状态)
+        
+        // 重置表单为新增状态
         this.resetForm(dateStr);
-
-        // 3. 渲染详情列表
+        
+        // 渲染详情列表
         this.renderDetailList(items);
 
-        // 4. 默认显示“记账”视图
+        // 默认显示记账页
         this.switchModalView('add');
         document.getElementById('addModal').style.display = 'flex';
     }
 
-    // === 切换模态框视图 ===
     switchModalView(view) {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.modal-view').forEach(v => v.classList.add('hidden'));
@@ -74,13 +75,13 @@ export class UI {
         }
     }
 
-    // === 渲染详情列表 (支持编辑/删除) ===
+    // === 渲染详情列表 ===
     renderDetailList(items) {
         const listDiv = document.getElementById('detailList');
         listDiv.innerHTML = '';
 
         if (!items || items.length === 0) {
-            listDiv.innerHTML = '<div style="padding:20px; text-align:center; opacity:0.6">暂无记录</div>';
+            listDiv.innerHTML = '<div style="padding:20px; text-align:center; opacity:0.6">当日无记录</div>';
             return;
         }
 
@@ -88,52 +89,47 @@ export class UI {
             const div = document.createElement('div');
             const typeClass = item.type === 'income' ? 'inc' : 'exp';
             div.className = `detail-item ${typeClass}`;
-
             const symbol = item.currency === 'USD' ? '$' : '¥';
-            const recurringIcon = item.isRecurring ? '<i class="fas fa-redo-alt" title="周期任务"></i> ' : '';
+            const icon = item.isRecurring ? '<i class="fas fa-redo-alt"></i> ' : '';
 
             div.innerHTML = `
                 <div class="item-info">
-                    <div style="font-weight:bold">${recurringIcon}${item.note}</div>
+                    <div style="font-weight:bold">${icon}${item.note}</div>
                     <div style="font-size:0.9em; opacity:0.8">${symbol}${item.amount}</div>
                 </div>
                 <div class="item-actions">
-                    <button class="btn-icon" title="编辑" id="edit-${item.id}"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon danger" title="删除" id="del-${item.id}"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon" id="edit-${item.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon danger" id="del-${item.id}"><i class="fas fa-trash"></i></button>
                 </div>
             `;
-            
             listDiv.appendChild(div);
 
-            // 绑定事件
+            // 绑定删除
             div.querySelector(`#del-${item.id}`).onclick = () => {
-                if(confirm('确认删除吗？如果是周期任务将影响所有相关日期。')) {
+                if(confirm('确认删除？如果是周期任务将影响所有相关日期。')) {
                     this.cb.onDeleteRecord(item.id, item.isRecurring);
                     document.getElementById('addModal').style.display = 'none';
                 }
             };
 
+            // 绑定编辑
             div.querySelector(`#edit-${item.id}`).onclick = () => {
                 this.fillFormForEdit(item);
-                this.switchModalView('add'); // 自动跳回编辑页
+                this.switchModalView('add');
             };
         });
     }
 
-    // === 填写表单 (编辑模式) ===
     fillFormForEdit(item) {
-        // 1. 填入基础信息
-        document.getElementById('editId').value = item.id; // 写入ID
+        document.getElementById('editId').value = item.id;
         document.getElementById('inType').value = item.type;
         document.getElementById('inAmount').value = item.amount;
         document.getElementById('inCurrency').value = item.currency;
         document.getElementById('inNote').value = item.note;
 
-        // 2. 切换 Tab
         const tabMode = item.isRecurring ? 'long' : 'single';
         document.querySelector(`.tab-btn[data-tab="${tabMode}"]`).click();
 
-        // 3. 填入日期信息
         if (item.isRecurring) {
             document.getElementById('inStartDate').value = item.start;
             document.getElementById('inEndDate').value = item.end;
@@ -141,14 +137,12 @@ export class UI {
         } else {
             document.getElementById('inDate').value = item.date;
         }
-
-        // 4. 更改按钮文字
         document.getElementById('btnConfirm').innerText = '修改保存';
     }
 
     resetForm(dateStr) {
         document.getElementById('recordForm').reset();
-        document.getElementById('editId').value = ''; // 清空ID
+        document.getElementById('editId').value = ''; 
         document.getElementById('inDate').value = dateStr;
         document.querySelector('.tab-btn[data-tab="single"]').click();
         document.getElementById('btnConfirm').innerText = '确认记账';
@@ -157,9 +151,8 @@ export class UI {
     getFormData() {
         const isLong = document.querySelector('.tab-btn[data-tab="long"]').classList.contains('active');
         const editId = document.getElementById('editId').value;
-        
         return {
-            id: editId ? Number(editId) : null, // 关键：如果有ID说明是修改
+            id: editId ? Number(editId) : null,
             type: document.getElementById('inType').value,
             amount: parseFloat(document.getElementById('inAmount').value),
             currency: document.getElementById('inCurrency').value,
@@ -172,8 +165,6 @@ export class UI {
         };
     }
 
-    // ... (Stats 和 YearGrid 代码保持不变) ...
-
     renderHeader(date, mode) {
         const y = date.getFullYear();
         if (mode === 'year') {
@@ -183,10 +174,10 @@ export class UI {
         }
     }
 
-    renderStats(totalInc, totalExp) {
-        document.getElementById('dispTotalInc').innerText = `¥${totalInc.toFixed(0)}`;
-        document.getElementById('dispTotalExp').innerText = `¥${totalExp.toFixed(0)}`;
-        const balance = totalInc - totalExp;
+    renderStats(tInc, tExp) {
+        document.getElementById('dispTotalInc').innerText = `¥${tInc.toFixed(0)}`;
+        document.getElementById('dispTotalExp').innerText = `¥${tExp.toFixed(0)}`;
+        const balance = tInc - tExp;
         document.getElementById('dispBalance').innerText = `¥${balance.toFixed(0)}`;
         document.getElementById('dispBalance').style.color = balance >= 0 ? '#00d26a' : '#f94144';
         document.getElementById('dispAvg').innerText = '统计中...'; 
@@ -210,14 +201,13 @@ export class UI {
             const cell = document.createElement('div');
             cell.className = 'day-cell';
             
-            // 日期数字
             const dateNum = document.createElement('div');
             dateNum.style.opacity = '0.5';
             dateNum.style.marginBottom = '5px';
             dateNum.innerText = idx + 1;
             cell.appendChild(dateNum);
             
-            // 简略条目 (仅展示，不绑定点击事件，点击整体触发)
+            // 渲染 Tag (仅展示)
             dayData.items.slice(0, 3).forEach(item => {
                 const tag = document.createElement('div');
                 const c = item.type === 'income' ? 'inc' : 'exp';
@@ -234,10 +224,9 @@ export class UI {
                 cell.appendChild(more);
             }
 
-            // === 核心修改：点击整个格子打开弹窗 ===
+            // 点击格子打开弹窗
             cell.onclick = () => {
                 const targetDate = new Date(year, month, idx + 1);
-                // 传入当日数据，用于渲染“详情”列表
                 this.openDayModal(targetDate, dayData.items);
             };
 

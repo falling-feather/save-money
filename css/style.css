@@ -44,7 +44,7 @@ button.danger { background: var(--red); color: white; }
 .tag.exp { border-left: 2px solid var(--red); background: rgba(249,65,68,0.1); }
 .tag.long { border-left: 2px solid var(--blue); background: rgba(76,201,240,0.1); }
 
-/* Modal */
+/* Modal 通用 */
 .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
 .modal-content { background: #1a1c29; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid var(--border); }
 .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -52,50 +52,21 @@ button.danger { background: var(--red); color: white; }
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #aaa; }
 .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+.tab-btn { flex:1; background:transparent; border:1px solid var(--border); }
 .tab-btn.active { background: var(--blue); color: #000; }
-#loading { display: none; position: fixed; top: 20px; right: 20px; background: var(--blue); padding: 8px 15px; border-radius: 20px; color: black; font-weight: bold; z-index: 999; }
-/* 新版模态框样式 */
-.modal-nav {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 15px;
-}
-.nav-btn {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 10px;
-    color: #888;
-    border-bottom: 3px solid transparent;
-    border-radius: 0;
-}
-.nav-btn.active {
-    color: white;
-    border-bottom-color: var(--blue);
-}
+.form-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
 
-.detail-list {
-    max-height: 300px;
-    overflow-y: auto;
-}
-.detail-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255,255,255,0.05);
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    border-left: 3px solid transparent;
-}
+#loading { display: none; position: fixed; top: 20px; right: 20px; background: var(--blue); padding: 8px 15px; border-radius: 20px; color: black; font-weight: bold; z-index: 999; }
+
+/* === 新增：详情页与弹窗导航 === */
+.modal-nav { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
+.nav-btn { flex: 1; background: transparent; border: none; padding: 10px; color: #888; border-bottom: 3px solid transparent; border-radius: 0; }
+.nav-btn.active { color: white; border-bottom-color: var(--blue); }
+
+.detail-list { max-height: 300px; overflow-y: auto; }
+.detail-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 8px; border-radius: 6px; border-left: 3px solid transparent; }
 .detail-item.inc { border-left-color: var(--green); }
 .detail-item.exp { border-left-color: var(--red); }
-
 .item-info { flex: 1; }
 .item-actions { display: flex; gap: 8px; }
-.btn-icon {
-    padding: 5px 8px;
-    font-size: 0.8em;
-    background: rgba(255,255,255,0.1);
-}
-.hidden { display: none !important; }
+.btn-icon { padding: 5px 8px; font-size: 0.8em; background: rgba(255,255,255,0.1); }

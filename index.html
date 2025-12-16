@@ -50,6 +50,7 @@
                         <option value="month">月视图 (明细)</option>
                         <option value="year">年视图 (趋势)</option>
                     </select>
+                    <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> 记一笔</button>
                 </div>
             </div>
             <div id="calendarGrid" class="calendar-grid"></div>
@@ -70,7 +71,9 @@
                     <button class="tab-btn" data-tab="long">周期/长期</button>
                 </div>
                 <form id="recordForm">
-                    <input type="hidden" id="editId"> <div class="form-row">
+                    <input type="hidden" id="editId"> 
+                    
+                    <div class="form-row">
                         <select id="inType"><option value="expense">支出</option><option value="income">收入</option></select>
                         <input type="number" id="inAmount" placeholder="金额" step="0.01" required>
                         <select id="inCurrency"><option value="CNY">CNY</option><option value="USD">USD</option></select>
@@ -107,12 +110,11 @@
 
             <div id="viewDetail" class="modal-view hidden">
                 <div id="detailList" class="detail-list">
-                    <div style="text-align:center; color:#666">当日无记录</div>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
-</html> 
+</html>
