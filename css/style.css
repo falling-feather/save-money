@@ -1,0 +1,56 @@
+:root {
+    --bg-dark: #0b0d17;
+    --glass: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.15);
+    --text: #ffffff;
+    --green: #00d26a; --red: #f94144; --blue: #4cc9f0;
+}
+body {
+    margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text); min-height: 100vh;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.glass-panel {
+    background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+/* 布局与控件通用样式 */
+input, select, button {
+    background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: white; padding: 8px 12px; border-radius: 6px; outline: none;
+}
+button { background: var(--blue); color: #000; cursor: pointer; font-weight: 600; border: none; }
+button:hover { filter: brightness(1.1); }
+button.danger { background: var(--red); color: white; }
+.hidden { display: none !important; }
+.income-text { color: var(--green); } .expense-text { color: var(--red); }
+
+/* 统计与图表 */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.stat-card { text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+.stat-value { font-size: 1.4em; font-weight: bold; margin-top: 5px; }
+.charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 300px; }
+.chart-box { position: relative; height: 100%; width: 100%; }
+
+/* 日历 */
+.calendar-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.day-cell { 
+    background: rgba(255,255,255,0.03); min-height: 100px; padding: 5px; border-radius: 4px; cursor: pointer; 
+    border: 1px solid transparent; transition: 0.2s;
+}
+.day-cell:hover { background: rgba(255,255,255,0.1); border-color: var(--border); }
+.tag { font-size: 0.7em; padding: 2px 4px; margin-top: 2px; border-radius: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tag.inc { border-left: 2px solid var(--green); background: rgba(0,210,106,0.1); }
+.tag.exp { border-left: 2px solid var(--red); background: rgba(249,65,68,0.1); }
+.tag.long { border-left: 2px solid var(--blue); background: rgba(76,201,240,0.1); }
+
+/* Modal */
+.modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
+.modal-content { background: #1a1c29; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid var(--border); }
+.form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.form-row > * { flex: 1; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #aaa; }
+.tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+.tab-btn.active { background: var(--blue); color: #000; }
+#loading { display: none; position: fixed; top: 20px; right: 20px; background: var(--blue); padding: 8px 15px; border-radius: 20px; color: black; font-weight: bold; z-index: 999; }

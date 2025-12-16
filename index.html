@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星空记账 - Starry Finance</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/stars.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div id="loading">正在连接星云...</div>
+
+    <div class="container">
+        <header class="glass-panel config-bar">
+            <h3 class="logo"><i class="fas fa-meteor"></i> Starry Finance</h3>
+            <div class="controls">
+                <input type="password" id="ghToken" placeholder="GitHub Token" />
+                <input type="text" id="ghRepo" placeholder="User/Repo" />
+                <button id="btnLoad"><i class="fas fa-cloud-download-alt"></i> 同步</button>
+                <button id="btnSave"><i class="fas fa-cloud-upload-alt"></i> 保存</button>
+            </div>
+        </header>
+
+        <section class="glass-panel">
+            <div class="stats-grid">
+                <div class="stat-card"><div>总收入</div><div class="stat-value income-text" id="dispTotalInc">--</div></div>
+                <div class="stat-card"><div>总支出</div><div class="stat-value expense-text" id="dispTotalExp">--</div></div>
+                <div class="stat-card"><div>结余</div><div class="stat-value" id="dispBalance">--</div></div>
+                <div class="stat-card"><div>周均支出</div><div class="stat-value" id="dispWeekly">--</div></div>
+            </div>
+            <div class="charts-container">
+                <div class="chart-box"><canvas id="pieChart"></canvas></div>
+                <div class="chart-box"><canvas id="barChart"></canvas></div>
+            </div>
+        </section>
+
+        <section class="glass-panel">
+            <div class="calendar-header">
+                <div class="month-nav">
+                    <button id="btnPrevMonth"><i class="fas fa-chevron-left"></i></button>
+                    <span id="currentDateLabel">LOADING...</span>
+                    <button id="btnNextMonth"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="view-controls">
+                    <select id="viewMode">
+                        <option value="month">月视图</option>
+                        <option value="year">年视图 (统计)</option>
+                    </select>
+                    <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> 记账</button>
+                </div>
+            </div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+        </section>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h3>添加星际记录</h3>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="single">单日</button>
+                <button class="tab-btn" data-tab="long">长期 (分摊)</button>
+            </div>
+            <form id="recordForm">
+                <div class="form-row">
+                    <select id="inType"><option value="expense">支出</option><option value="income">收入</option></select>
+                    <input type="number" id="inAmount" placeholder="金额" step="0.01" required>
+                    <select id="inCurrency"><option value="CNY">CNY</option><option value="USD">USD</option></select>
+                </div>
+                
+                <div id="groupSingle" class="form-group">
+                    <label>日期</label><input type="date" id="inDate">
+                </div>
+                <div id="groupLong" class="form-group hidden">
+                    <div class="form-row">
+                        <div><label>开始</label><input type="date" id="inStartDate"></div>
+                        <div><label>结束</label><input type="date" id="inEndDate"></div>
+                    </div>
+                    <small>系统将自动计算每日分摊金额</small>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="inNote" placeholder="备注 (例如: 咖啡, 服务器费)">
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="btnCancel" class="danger">取消</button>
+                    <button type="submit" id="btnConfirm">确认记录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
