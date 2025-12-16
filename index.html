@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div id="loading">正在连接星云...</div>
@@ -31,7 +30,7 @@
                 <div class="stat-card"><div>总收入</div><div class="stat-value income-text" id="dispTotalInc">--</div></div>
                 <div class="stat-card"><div>总支出</div><div class="stat-value expense-text" id="dispTotalExp">--</div></div>
                 <div class="stat-card"><div>结余</div><div class="stat-value" id="dispBalance">--</div></div>
-                <div class="stat-card"><div>周均支出</div><div class="stat-value" id="dispWeekly">--</div></div>
+                <div class="stat-card"><div>平均/周期</div><div class="stat-value" id="dispAvg">--</div></div>
             </div>
             <div class="charts-container">
                 <div class="chart-box"><canvas id="pieChart"></canvas></div>
@@ -42,16 +41,16 @@
         <section class="glass-panel">
             <div class="calendar-header">
                 <div class="month-nav">
-                    <button id="btnPrevMonth"><i class="fas fa-chevron-left"></i></button>
-                    <span id="currentDateLabel">LOADING...</span>
-                    <button id="btnNextMonth"><i class="fas fa-chevron-right"></i></button>
+                    <button id="btnPrev"><i class="fas fa-chevron-left"></i></button>
+                    <span id="currentDateLabel" style="min-width: 120px; text-align:center; font-weight:bold; font-size:1.1em;">LOADING...</span>
+                    <button id="btnNext"><i class="fas fa-chevron-right"></i></button>
                 </div>
                 <div class="view-controls">
                     <select id="viewMode">
-                        <option value="month">月视图</option>
-                        <option value="year">年视图 (统计)</option>
+                        <option value="month">月视图 (明细)</option>
+                        <option value="year">年视图 (趋势)</option>
                     </select>
-                    <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> 记账</button>
+                    <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> 记一笔</button>
                 </div>
             </div>
             <div id="calendarGrid" class="calendar-grid"></div>
@@ -60,10 +59,10 @@
 
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h3>添加星际记录</h3>
+            <h3><i class="fas fa-pen-fancy"></i> 记账</h3>
             <div class="tabs">
-                <button class="tab-btn active" data-tab="single">单日</button>
-                <button class="tab-btn" data-tab="long">长期 (分摊)</button>
+                <button class="tab-btn active" data-tab="single">单次记录</button>
+                <button class="tab-btn" data-tab="long">周期/长期</button>
             </div>
             <form id="recordForm">
                 <div class="form-row">
@@ -75,20 +74,28 @@
                 <div id="groupSingle" class="form-group">
                     <label>日期</label><input type="date" id="inDate">
                 </div>
+
                 <div id="groupLong" class="form-group hidden">
                     <div class="form-row">
                         <div><label>开始</label><input type="date" id="inStartDate"></div>
                         <div><label>结束</label><input type="date" id="inEndDate"></div>
                     </div>
-                    <small>系统将自动计算每日分摊金额</small>
+                    <div class="form-group">
+                        <label>支付频率</label>
+                        <select id="inCycle" style="width:100%">
+                            <option value="1">每天 (连续)</option>
+                            <option value="7">每周 (7天一次)</option>
+                            <option value="30">每月 (30天一次)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <input type="text" id="inNote" placeholder="备注 (例如: 咖啡, 服务器费)">
+                    <input type="text" id="inNote" placeholder="备注 (如: 房租、订阅费)">
                 </div>
                 <div class="form-actions">
                     <button type="button" id="btnCancel" class="danger">取消</button>
-                    <button type="submit" id="btnConfirm">确认记录</button>
+                    <button type="submit" id="btnConfirm">确认</button>
                 </div>
             </form>
         </div>
